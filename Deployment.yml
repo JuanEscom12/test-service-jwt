@@ -1,0 +1,101 @@
+# Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-service-jwt
+  namespace: calpullix-eureka-server
+spec:
+  selector:
+    matchLabels:
+      app: test-service-jwt
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: test-service-jwt
+    spec:
+      containers:
+        - name: test-service-jwt
+          image: registry.gitlab.com/juan12/test-service-jwt-1.0-snapshot
+          ports:
+            - containerPort: 9090
+
+-------------------------------------------------------------------------------
+
+# Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service-jwt
+  namespace: calpullix-eureka-server
+spec:
+  selector:
+    app: test-service-jwt
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+
+-------------------------------------------------------------------------------
+
+# Route (Generado por Openshift)
+
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: test-service-jwt
+  namespace: calpullix-eureka-server
+  selfLink: >-
+    /apis/route.openshift.io/v1/namespaces/calpullix-eureka-server/routes/test-service-jwt
+  uid: a0783eea-bd39-4253-b6e4-ec7a57829fdb
+  resourceVersion: '456820823'
+  creationTimestamp: '2020-08-15T03:40:18Z'
+  annotations:
+    openshift.io/host.generated: 'true'
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: route.openshift.io/v1
+      time: '2020-08-15T03:40:18Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:port':
+            .: {}
+            'f:targetPort': {}
+          'f:to':
+            'f:kind': {}
+            'f:name': {}
+            'f:weight': {}
+          'f:wildcardPolicy': {}
+    - manager: openshift-router
+      operation: Update
+      apiVersion: route.openshift.io/v1
+      time: '2020-08-15T03:40:19Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:ingress': {}
+spec:
+  host: >-
+    test-service-jwt-calpullix-eureka-server.apps.us-west-1.starter.openshift-online.com
+  to:
+    kind: Service
+    name: test-service-jwt
+    weight: 100
+  port:
+    targetPort: 9500
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: >-
+        test-service-jwt-calpullix-eureka-server.apps.us-west-1.starter.openshift-online.com
+      routerName: default
+      conditions:
+        - type: Admitted
+          status: 'True'
+          lastTransitionTime: '2020-08-15T03:40:19Z'
+      wildcardPolicy: None
+      routerCanonicalHostname: apps.us-west-1.starter.openshift-online.com
